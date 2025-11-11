@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { Env } from './core-utils';
+import type { ClientErrorReport } from './index';
 
 export function userRoutes(app: Hono<{ Bindings: Env }>) {
     // **DO NOT MODIFY CORS OR OVERRIDE ERROR HANDLERS**
@@ -8,7 +9,7 @@ export function userRoutes(app: Hono<{ Bindings: Env }>) {
     app.post('/api/client-errors', async (c) => {
         try {
             console.log('Received client error');
-            const e = await c.req.json<any>();
+            const e = await c.req.json<ClientErrorReport>();
             if (!e?.message || !e?.url || !e?.userAgent) {
                 return c.json({ success: false, error: 'Missing required fields' }, 400);
             }
