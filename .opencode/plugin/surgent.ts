@@ -110,7 +110,7 @@ export const SurgentDeployPlugin: Plugin = async ({ $, directory }) => {
             if (!linkedinUrl) {
               return `Missing linkedinUrl`
             }
-            const token = "apify_api_miaEfg8NUJtNsd0Xvs3BMCSKBfdGcK0ZEm8r"
+            const token = process.env.APIFY_TOKEN
             const client = new ApifyClient({ token })
             const run = await client.actor('2SyF0bVxmgGr8IVCZ').call({
               profileUrls: [linkedinUrl],
