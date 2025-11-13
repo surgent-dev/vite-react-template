@@ -86,7 +86,7 @@ export const SurgentDeployPlugin: Plugin = async ({ $, directory }) => {
         },
       }),
       "devLogs": tool({
-        description: "Show the last N lines of dev server PM2 logs using pm2 logs. Args: lines (default 20) to specify the number of lines to show.",
+        description: "Show the last N lines of dev server/browser logs to see the errors. Use this tool to debug and analyze the errors. Args: lines (default 20) to specify the number of lines to show.",
         args: { lines: z.number().default(20) },
         async execute(args): Promise<string> {
           try {
