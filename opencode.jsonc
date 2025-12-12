@@ -3,13 +3,5 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "surgent-plugin"
-  ],
-  "provider": {
-    "openai": {
-      "options": {
-        "baseURL": "{env:OPENAI_BASE_URL}",
-        "apiKey": "{env:HELICONE_API_KEY}"
-      }
-    }
-  }
+  ]
 }
