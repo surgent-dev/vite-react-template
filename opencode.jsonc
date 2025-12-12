@@ -7,7 +7,7 @@
   "provider": {
     "openai": {
       "options": {
-        "baseURL": "{env:SURGENT_AI_BASE_URL}",
+        "baseURL": "{env:OPENAI_BASE_URL}",
         "apiKey": "{env:SURGENT_API_KEY}"
       }
     }
