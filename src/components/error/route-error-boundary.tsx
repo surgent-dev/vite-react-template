@@ -7,56 +7,31 @@ export function RouteErrorBoundary() {
   const error = useRouteError();
 
   useEffect(() => {
-    // Report the route error
-    if (error) {
-      let errorMessage = 'Unknown route error';
-      let errorStack = '';
+    if (!error) return;
 
-      if (isRouteErrorResponse(error)) {
-        errorMessage = `Route Error ${error.status}: ${error.statusText}`;
-        if (error.data) {
-          errorMessage += ` - ${JSON.stringify(error.data)}`;
-        }
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-        errorStack = error.stack || '';
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      } else {
-        errorMessage = JSON.stringify(error);
-      }
+    let message = 'Unknown route error';
+    let stack = '';
 
-      errorReporter.report({
-        message: errorMessage,
-        stack: errorStack,
-        url: window.location.href,
-        userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString(),
-        source: 'react-router',
-        error: error,
-        level: "error",
-      });
+    if (isRouteErrorResponse(error)) {
+      message = `Route Error ${error.status}: ${error.statusText}`;
+    } else if (error instanceof Error) {
+      message = error.message;
+      stack = error.stack || '';
+    } else if (typeof error === 'string') {
+      message = error;
     }
+
+    errorReporter.reportRouteError(message, stack);
   }, [error]);
 
-  // Render error UI using shared ErrorFallback component
   if (isRouteErrorResponse(error)) {
     return (
       <ErrorFallback
         title={`${error.status} ${error.statusText}`}
-        message="Try again or copy details for AI."
-        error={error.data ? { message: JSON.stringify(error.data, null, 2) } : error}
-        statusMessage="Navigation error"
+        error={error.data ? { message: JSON.stringify(error.data, null, 2) } : undefined}
       />
     );
   }
 
-  return (
-    <ErrorFallback
-      title="Unexpected Error"
-      message="Try again or copy details for AI."
-      error={error}
-      statusMessage="Routing error"
-    />
-  );
+  return <ErrorFallback error={error instanceof Error ? error : undefined} />;
 }

@@ -1,7 +1,0 @@
-// STRICTLY DO NOT MODIFY THIS FILE - Hidden from AI to prevent breaking core functionality
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": [
-    "surgent-plugin"
-  ]
-}

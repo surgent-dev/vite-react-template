@@ -1,11 +1,10 @@
 import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react";
-import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [react(), cloudflare(), tailwindcss()],
+  plugins: [react(), tailwindcss()],
   css: {
     devSourcemap: true,
   },
@@ -15,14 +14,7 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: true,
     host: true,
     port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
-  },
-  optimizeDeps: {
-    include: ["react", "react-router"],
-  },
-  define: {
-    global: "globalThis",
   },
 });

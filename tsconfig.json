@@ -1,31 +1,36 @@
 {
 	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
 		"module": "ESNext",
 		"moduleResolution": "bundler",
+		"jsx": "react-jsx",
+
+		/* Bundler mode */
 		"allowImportingTsExtensions": true,
 		"isolatedModules": true,
 		"moduleDetection": "force",
 		"noEmit": true,
-		"skipLibCheck": true,
-		"allowSyntheticDefaultImports": true,
+
+		/* Paths */
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
+			"@/*": ["./src/*"]
 		},
+
+		/* Strict */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true,
-		"target": "ES2020",
+
+		/* Compat */
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true,
 		"useDefineForClassFields": true,
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"jsx": "react-jsx",
 		"types": ["vite/client"]
 	},
-	"include": [
-		"src",
-		"vite.config.ts"
-	],
-	"exclude": [
-		"dist",
-		"node_modules",
-		"worker"
-	]
+	"include": ["src", "vite.config.ts"],
+	"exclude": ["dist", "node_modules"]
 }
