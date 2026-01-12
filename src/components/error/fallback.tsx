@@ -55,7 +55,7 @@ export function ErrorFallback({
           </div>
 
           {errorMessage && (
-            <pre className="whitespace-pre-wrap break-words font-mono text-xs text-destructive bg-destructive/5 border border-destructive/20 rounded-lg p-4">
+            <pre className="whitespace-pre-wrap font-mono text-xs text-destructive bg-destructive/5 border border-destructive/20 rounded-lg p-4">
               {errorMessage}
             </pre>
           )}

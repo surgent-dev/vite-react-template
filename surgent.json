@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "init": "bun install",
+    "dev": "bun run dev",
+    "lint": "bun run lint"
+  },
+  "name": "surgent-web-server"
+}
