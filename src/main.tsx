@@ -10,6 +10,12 @@ import { HomePage } from '@/pages/home'
 import '@/index.css'
 import { Toaster } from 'react-hot-toast'
 
+// Handle module load failures (e.g., after deployment with stale chunks)
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault();
+  window.location.reload();
+});
+
 const router = createBrowserRouter([
   {
     path: "/",
