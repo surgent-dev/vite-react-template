@@ -9,24 +9,51 @@
   <body>
     <div id="root"></div>
     <script>
-        window.addEventListener('error', (event) => {
-          if (window.errorReporterReady) {
-            return; // app reporter active; skip bootstrap fallback
+        // Post errors to parent window (for Surgent preview integration)
+        window._errorsSent = new Set();
+        function postErrorToParent(message, stack, source) {
+          // Dedupe errors
+          var key = (message || '').slice(0, 100);
+          if (window._errorsSent.has(key)) return;
+          window._errorsSent.add(key);
+          setTimeout(function() { window._errorsSent.delete(key); }, 5000);
+
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({
+              type: 'error',
+              payload: {
+                message: message,
+                stack: stack,
+                url: window.location.href,
+                timestamp: new Date().toISOString(),
+                source: source || 'global'
+              }
+            }, '*');
           }
-          const isOurAppError = event.filename && event.filename.startsWith(window.location.origin);
-          if (isOurAppError) {
-            navigator.sendBeacon('/api/client-errors', JSON.stringify({
-              message: event.message,
-              url: window.location.href,
-              userAgent: navigator.userAgent,
-              source: event.filename,
-              lineno: event.lineno,
-              colno: event.colno,
-              stack: event.error ? event.error.stack : null,
-              timestamp: new Date().toISOString()
-            }));
-          }
+        }
+
+        // Catch errors before app loads (e.g., module resolution failures)
+        window.addEventListener('error', function(event) {
+          if (window.errorReporterReady) return;
+          var message = event.message || (event.error && event.error.message) || 'Unknown error';
+          var stack = event.error ? event.error.stack : null;
+          postErrorToParent(message, stack, 'global');
         }, true);
+
+        // Catch unhandled promise rejections (dynamic import failures)
+        window.addEventListener('unhandledrejection', function(event) {
+          if (window.errorReporterReady) return;
+          var reason = event.reason || {};
+          var message = reason.message || String(reason) || 'Unhandled Promise Rejection';
+          var stack = reason.stack || null;
+          postErrorToParent(message, stack, 'promise');
+        });
+
+        // Catch module preload errors (Vite dynamic imports)
+        window.addEventListener('vite:preloadError', function(event) {
+          var message = 'Failed to load module: ' + (event.payload || 'unknown');
+          postErrorToParent(message, null, 'preload');
+        });
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

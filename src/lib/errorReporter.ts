@@ -18,6 +18,9 @@ class ErrorReporter {
   init() {
     if (typeof window === 'undefined') return;
 
+    // Mark app error reporter as ready (disables index.html fallback)
+    (window as any).errorReporterReady = true;
+
     // Global errors
     window.onerror = (msg, _src, _line, _col, error) => {
       this.postToParent(String(msg), error?.stack, 'global');
@@ -57,7 +60,12 @@ class ErrorReporter {
     };
 
     // Post to parent window (for iframe usage)
-    window.parent?.postMessage(payload, '*');
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage(payload, '*');
+    } else {
+      // Standalone mode - log to console for debugging
+      console.error('[ErrorReporter]', message, stack);
+    }
   }
 
   // For React error boundaries
