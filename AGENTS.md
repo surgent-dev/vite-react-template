@@ -1,106 +1,105 @@
 # Surgent Web Template
 
-A modern React template for building web applications with Surgent AI App Builder.
+React template for Surgent AI App Builder.
 
-## Tech Stack
+## Stack
 
-| Category | Technology |
-|----------|------------|
-| Runtime | Bun |
-| Framework | React 19 + Vite 7 |
-| Routing | React Router 7 |
-| Styling | Tailwind CSS 4 (OKLCH color system) |
-| State | Zustand + React Query |
-| Forms | React Hook Form + Zod |
-| Animations | Framer Motion |
-| UI Primitives | Radix UI (53 pre-built components) |
-| Types | TypeScript 5.9 (strict mode) |
-| Backend | Convex (optional) |
+- **Runtime**: Bun
+- **Framework**: React 19 + Vite 7 + TypeScript
+- **Routing**: React Router 7
+- **Styling**: Tailwind CSS 4 (OKLCH colors)
+- **State**: Zustand (global) + React Query (server)
+- **Forms**: React Hook Form + Zod
+- **UI**: 60+ shadcn/ui components (Radix primitives) in `src/components/ui/`
+- **Backend**: Convex (optional)
 
-## Project Structure
+## Structure
 
 ```
 src/
 ├── components/
-│   ├── ui/           # 53 shadcn-style components (Button, Dialog, etc.)
-│   └── error/        # Error boundary + fallback UI
-├── hooks/            # Custom hooks (e.g., useIsMobile)
-├── lib/              # Utilities (cn, errorReporter)
+│   ├── ui/           # shadcn components (Button, Card, Dialog, Form, Table...)
+│   └── error/        # ErrorBoundary, RouteErrorBoundary
+├── hooks/            # useIsMobile, custom hooks
+├── lib/              # cn(), errorReporter
 ├── pages/            # Route components
-├── index.css         # Global styles + Tailwind config
-└── main.tsx          # Entry point
+├── main.tsx          # App entry + route definitions
+└── index.css         # Tailwind + theme variables
 ```
 
 ## Scripts
 
 ```bash
-bun dev          # Start Vite dev server
+bun dev          # Dev server (localhost:3000)
 bun build        # Production build
-bun typecheck    # TypeScript type checking
-bun dev:convex   # Dev server with Convex backend sync
+bun typecheck    # Type check
+bun dev:convex   # Dev with Convex sync
 ```
 
-## Key Patterns
+## Adding Pages & Routes
 
-### Path Alias
-Use `@/` to import from src:
+1. Create page in `src/pages/dashboard.tsx`:
 ```tsx
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-```
-
-### Styling with Tailwind
-Use the `cn()` utility for conditional classes:
-```tsx
-import { cn } from '@/lib/utils'
-
-<div className={cn('base-class', isActive && 'active-class')} />
-```
-
-### Component Naming
-- Use **kebab-case** for file names: `user-profile.tsx`
-- Use **PascalCase** for component names: `UserProfile`
-
-### Error Handling
-3-tier error system:
-1. **Global** - `window.onerror` catches runtime errors
-2. **React Boundary** - `ErrorBoundary` catches component errors
-3. **Route Boundary** - `RouteErrorBoundary` catches routing errors
-
-Errors are posted to parent window (for Surgent preview integration).
-
-## UI Components
-
-53 pre-built components in `src/components/ui/`:
-
-**Layout**: Card, Dialog, Drawer, Sheet, Tabs, Accordion, Collapsible, Resizable, Scroll Area, Separator
-
-**Forms**: Button, Input, Textarea, Select, Checkbox, Radio Group, Switch, Slider, Calendar, Date Picker, Form, Label
-
-**Feedback**: Alert, Badge, Progress, Skeleton, Spinner, Toast (Sonner)
-
-**Navigation**: Breadcrumb, Dropdown Menu, Context Menu, Menubar, Navigation Menu, Pagination
-
-**Data Display**: Avatar, Table, Carousel, Chart (Recharts), Hover Card, Tooltip
-
-**Overlay**: Alert Dialog, Dialog, Popover, Sheet, Drawer, Command (⌘K)
-
-Metadata for Surgent platform:
-```json
-{
-  "name": "surgent-web-server",
-  "scripts": {
-    "init": "bun install",
-    "dev": "bun run dev",
-    "lint": "bun run lint"
-  }
+export default function DashboardPage() {
+  return <div>Dashboard</div>
 }
 ```
 
-## Important Rules
+2. Add route in `src/main.tsx` inside the `routes` array:
+```tsx
+import DashboardPage from '@/pages/dashboard'
+import { RouteErrorBoundary } from '@/components/error/route-error-boundary'
 
-- **Always use Bun** - never npm, yarn, or pnpm
-- **Use kebab-case** for file and folder names
-- **Use existing components** from `src/components/ui/` before creating new ones
-- **Follow existing patterns** - check similar files for conventions
-- **Keep it simple** - avoid over-engineering, build MVPs first
+// Add to createBrowserRouter routes array:
+{
+  path: '/dashboard',
+  element: <DashboardPage />,
+  errorElement: <RouteErrorBoundary />,
+}
+```
+
+## Patterns
+
+```tsx
+// Always use @/ alias for imports
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+// Conditional classes with cn()
+<div className={cn('base', isActive && 'active')} />
+
+// Mobile detection (768px breakpoint)
+const isMobile = useIsMobile()
+```
+
+## Styling
+
+Theme variables in `src/index.css` using OKLCH:
+
+```css
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+}
+```
+
+## Naming
+
+- Files: `kebab-case.tsx`
+- Components: `PascalCase`
+- Hooks: `use-kebab-case.ts`
+
+## Rules
+
+1. **Use Bun** - never npm/yarn/pnpm
+2. **Use existing shadcn components** from `src/components/ui/` before creating new ones
+3. **Use `@/` imports** - never relative `../`
+4. **Run `bun typecheck`** before committing
+5. **Keep it simple** - build MVPs first
