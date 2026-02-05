@@ -61,9 +61,12 @@ import { RouteErrorBoundary } from '@/components/error/route-error-boundary'
 ## Patterns
 
 ```tsx
-// Always use @/ alias for imports
+// src/ imports - use @/ alias
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+
+// Convex imports - use direct path
+import { api } from "convex/_generated/api"
 
 // Conditional classes with cn()
 <div className={cn('base', isActive && 'active')} />
@@ -100,6 +103,34 @@ Theme variables in `src/index.css` using OKLCH:
 
 1. **Use Bun** - never npm/yarn/pnpm
 2. **Use existing shadcn components** from `src/components/ui/` before creating new ones
-3. **Use `@/` imports** - never relative `../`
-4. **Run `bun typecheck`** before committing
-5. **Keep it simple** - build MVPs first
+3. **Imports**:
+   - Use `@/` for `src/` imports: `import { Button } from '@/components/ui/button'`
+   - Use direct path for Convex: `import { api } from "convex/_generated/api"`
+4. **Toasts** - use `sonner` (already configured in main.tsx):
+   ```tsx
+   import { toast } from "sonner"
+   toast.success("Done!")
+   toast.error("Failed")
+   ```
+5. **Run `bun typecheck`** before committing
+6. **Keep it simple** - build MVPs first
+
+## Convex Integration
+
+When Convex is added to the project:
+
+```tsx
+// Queries/mutations - use hooks
+import { useQuery, useMutation, useAction } from "convex/react"
+import { api } from "convex/_generated/api"
+
+const data = useQuery(api.messages.list)
+const send = useMutation(api.messages.send)
+const doAction = useAction(api.pay.checkout)
+
+// Call mutations/actions
+await send({ text: "hello" })
+const result = await doAction({ productSlug: "pro" })
+```
+
+ConvexProvider is added to main.tsx when convex is initialized.
