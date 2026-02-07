@@ -65,8 +65,8 @@ import { RouteErrorBoundary } from '@/components/error/route-error-boundary'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-// Convex imports - use direct path
-import { api } from "convex/_generated/api"
+// Convex imports - use @convex alias (resolves to ./convex/_generated/)
+import { api } from "@convex/api"
 
 // Conditional classes with cn()
 <div className={cn('base', isActive && 'active')} />
@@ -105,7 +105,7 @@ Theme variables in `src/index.css` using OKLCH:
 2. **Use existing shadcn components** from `src/components/ui/` before creating new ones
 3. **Imports**:
    - Use `@/` for `src/` imports: `import { Button } from '@/components/ui/button'`
-   - Use direct path for Convex: `import { api } from "convex/_generated/api"`
+   - Use `@convex/` for Convex generated code: `import { api } from "@convex/api"` (NEVER use `convex/_generated/api` — breaks in Vite 7)
 4. **Toasts** - use `sonner` (already configured in main.tsx):
    ```tsx
    import { toast } from "sonner"
@@ -122,7 +122,7 @@ When Convex is added to the project:
 ```tsx
 // Queries/mutations - use hooks
 import { useQuery, useMutation, useAction } from "convex/react"
-import { api } from "convex/_generated/api"
+import { api } from "@convex/api"
 
 const data = useQuery(api.messages.list)
 const send = useMutation(api.messages.send)
