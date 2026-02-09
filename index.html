@@ -35,6 +35,8 @@
         // Catch errors before app loads (e.g., module resolution failures)
         window.addEventListener('error', function(event) {
           if (window.errorReporterReady) return;
+          // Skip cross-origin "Script error" — browser strips details, nothing actionable
+          if (!event.error && /^script error\.?$/i.test(event.message || '')) return;
           var message = event.message || (event.error && event.error.message) || 'Unknown error';
           var stack = event.error ? event.error.stack : null;
           postErrorToParent(message, stack, 'global');
@@ -45,6 +47,8 @@
           if (window.errorReporterReady) return;
           var reason = event.reason || {};
           var message = reason.message || String(reason) || 'Unhandled Promise Rejection';
+          // Skip generic rejections with no useful info
+          if (/^script error\.?$/i.test(message)) return;
           var stack = reason.stack || null;
           postErrorToParent(message, stack, 'promise');
         });

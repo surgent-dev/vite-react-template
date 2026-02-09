@@ -23,6 +23,8 @@ class ErrorReporter {
 
     // Global errors
     window.onerror = (msg, _src, _line, _col, error) => {
+      // Skip cross-origin "Script error" — browser strips details, nothing actionable
+      if (!error && /^script error\.?$/i.test(String(msg))) return false;
       this.postToParent(String(msg), error?.stack, 'global');
       return false;
     };
